@@ -1,0 +1,3 @@
+etc/pretix.cfg
+.env
+rootfs/**/*

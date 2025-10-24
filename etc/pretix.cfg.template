@@ -1,0 +1,31 @@
+[pretix]
+instance_name=pretix.stair.ch
+url=https://pretix.stair.ch
+currency=CHF
+datadir=/data
+
+[mail]
+# host= ENV[PRETIX_EMAIL_HOST]
+# from= ENV[PRETIX_EMAIL]
+# user= ENV[PRETIX_EMAIL]
+# password= ENV[PRETIX_MAIL_PASSWORD]
+port=587
+tls=True
+
+[django]
+debug=false
+
+[database]
+backend=postgresql_psycopg2
+name=pretix
+# user= ENV[PRETIX_DATABASE_USER]
+# password= ENV[PRETIX_DATABASE_PASSWORD]
+host=database
+
+[redis]
+location=redis://redis/0
+sessions=true
+
+[celery]
+backend=redis://redis/1
+broker=redis://redis/2

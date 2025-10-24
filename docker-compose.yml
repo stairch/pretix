@@ -1,0 +1,66 @@
+services:
+    database:
+        image: postgres:13.22-alpine
+        container_name: database
+        environment:
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - PRETIX_DATABASE_USER=${POSTGRES_USER}
+            - PRETIX_DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+            - PRETIX_MAIL_HOST=${PRETIX_EMAIL_HOST}
+            - PRETIX_MAIL_USER=${PRETIX_EMAIL}
+            - PRETIX_MAIL_FROM=${PRETIX_EMAIL}
+            - PRETIX_MAIL_PASSWORD=${PRETIX_EMAIL_PASSWORD}
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        networks:
+            - backend
+
+    redis:
+        image: redis:latest
+        container_name: cache
+        ports:
+            - "6379:6379"
+        networks:
+            - backend
+
+    pretix:
+        build:
+            context: .
+        container_name: pretix
+        depends_on:
+            - database
+            - redis
+        ports:
+            - "8000:80"
+        volumes:
+            - ./etc/pretix.cfg:/etc/pretix/pretix.cfg
+            - data:/data
+            - src:/pretix/src
+        networks:
+            - backend
+
+volumes:
+    data:
+        driver: local
+        driver_opts:
+            type: "none"
+            o: "bind"
+            device: ${PWD}/rootfs/data
+    postgres:
+        driver: local
+        driver_opts:
+            type: "none"
+            o: "bind"
+            device: ${PWD}/rootfs/postgres
+    src:
+        driver: local
+        driver_opts:
+            type: "none"
+            o: "bind"
+            device: ${PWD}/rootfs/src
+
+networks:
+    backend:
