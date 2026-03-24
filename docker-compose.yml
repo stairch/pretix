@@ -17,6 +17,7 @@ services:
             - postgres:/var/lib/postgresql/data
         networks:
             - backend
+        restart: unless-stopped
 
     redis:
         image: redis:latest
@@ -25,6 +26,7 @@ services:
             - "6379:6379"
         networks:
             - backend
+        restart: unless-stopped
 
     pretix:
         build:
@@ -41,6 +43,7 @@ services:
             - src:/pretix/src
         networks:
             - backend
+        restart: unless-stopped
 
 volumes:
     data:
